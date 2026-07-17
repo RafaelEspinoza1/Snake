@@ -8,9 +8,14 @@ namespace Snake
 {
     public class Renderizador
     {
-        public static int Alto = 20;
-        public static int Ancho = 60;
-        public static void DibujarTablero()
+        public int Alto { get; }
+        public int Ancho { get; }
+        public Renderizador()
+        {
+            Alto = 20;
+            Ancho = 60;
+        }
+        public void DibujarTablero()
         {
             Console.CursorVisible = false;
             Console.SetCursorPosition(0, 0);
@@ -32,10 +37,15 @@ namespace Snake
                 Console.WriteLine();
             }
         }
-        public static void DibujarPunto(int x, int y)
+        public void DibujarCabezaSnake(int x, int y)
         {
             Console.SetCursorPosition(x, y);
             Console.WriteLine("@");
+        }
+        public void BorrarPosicionAnterior(Posicion posicionAnterior)
+        {
+            Console.SetCursorPosition(posicionAnterior.X, posicionAnterior.Y);
+            Console.Write(" ");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,57 +9,83 @@ namespace Snake
 {
     public class MovimientoSnake
     {
-        public static Posicion posicionPunto = new Posicion(11, 8);
-        public static Posicion posicionAnterior = new Posicion(posicionPunto.X, posicionPunto.Y);
-        public static char? DireccionGuardada;
-        public static void Movimiento()
+        public enum Direccion
+        {
+            Arriba,
+            Abajo,
+            Derecha,
+            Izquierda
+
+        }
+        Posicion posicionInicial = new Posicion(11, 8);
+        public Posicion posicionCabeza;
+        public Posicion posicionAnteriorCabeza;
+        public Direccion direccionActual = Direccion.Derecha;
+        public MovimientoSnake()
+        {
+            posicionCabeza = new Posicion(posicionInicial.X, posicionInicial.Y);
+            posicionAnteriorCabeza = new Posicion(posicionCabeza.X, posicionCabeza.Y);
+        }
+        public void Movimiento()
         {
             if (Console.KeyAvailable)
             {
-                MoverPunto();
+                MoverSnake();
             }
             else
             {
                 MantenerMovimiento();
             }
-            ActualizarPosicionAnterior();
-            Renderizador.DibujarPunto(posicionPunto.X, posicionPunto.Y);
         }
-        public static void MoverPunto()
+        void MoverSnake()
         {
-            var Direccion = Console.ReadKey(true);
-            DireccionGuardada = Direccion.KeyChar;
-            AplicarDirecion(Direccion.KeyChar);
-        }
-        public static void MantenerMovimiento()
-        {
-            AplicarDirecion(DireccionGuardada);
-        }
-        public static void ActualizarPosicionAnterior()
-        {
-            Console.SetCursorPosition(posicionAnterior.X, posicionAnterior.Y);
-            Console.Write(" ");
-            posicionAnterior.X = posicionPunto.X;
-            posicionAnterior.Y = posicionPunto.Y;
-        }
-        public static void AplicarDirecion(char? Direccion)
-        {
-            switch (Direccion)
+            var tecla = Console.ReadKey(true);
+            char direccion = char.ToLower(tecla.KeyChar);
+            switch (direccion)
             {
-                case null: // Cuando se inicia el juego se mueve a la derecha como predeterminado
-                    posicionPunto.X++;
-                    break;
                 case 'w':
-                    posicionPunto.Y--;
-                    break;
+                        direccionActual = Direccion.Arriba;
+                        break;
                 case 's':
-                    posicionPunto.Y++;
-                    break;
+                        direccionActual = Direccion.Abajo;
+                        break;
                 case 'a':
-                    posicionPunto.X--;
-                    break;
+                        direccionActual = Direccion.Izquierda;
+                        break;
                 case 'd':
-                    posicionPunto.X++;
+                        direccionActual = Direccion.Derecha;
+                        break;
+            }
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true);
+            }
+            AplicarDireccion();
+        }
+        void MantenerMovimiento()
+        {
+            AplicarDireccion();
+        }
+        public void ActualizarPosicionAnterior()
+        {
+            posicionAnteriorCabeza.X = posicionCabeza.X;
+            posicionAnteriorCabeza.Y = posicionCabeza.Y;
+        }
+        void AplicarDireccion()
+        {
+            switch (direccionActual)
+            {
+                case Direccion.Arriba:
+                    posicionCabeza.Y--;
+                    break;
+                case Direccion.Abajo:
+                    posicionCabeza.Y++;
+                    break;
+                case Direccion.Izquierda:
+                    posicionCabeza.X--;
+                    break;
+                case Direccion.Derecha:   
+                    posicionCabeza.X++;
                     break;
             }
         }
